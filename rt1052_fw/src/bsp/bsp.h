@@ -20,6 +20,9 @@ extern "C" {
 #include "config/board/peripherals.h"
 
 
+#include "fsl_gpio.h"
+
+
 
 #define logPrintf(...)    printf(__VA_ARGS__)
 
