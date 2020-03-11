@@ -632,6 +632,9 @@ void ResetISR(void) {
     // Disable interrupts
     __asm volatile ("cpsid i");
 
+    //-- J-Link로 디버깅시 스텍포인터가 자동 초기화가 안되서 일단 임으로 초기화 함. @chcbaram
+    //__set_MSP(&_vStackTop);
+    __asm volatile ("MSR msp, %0" : : "r" (&_vStackTop) : );
 
 #if defined (__USE_CMSIS)
 // If __USE_CMSIS defined, then call CMSIS SystemInit code

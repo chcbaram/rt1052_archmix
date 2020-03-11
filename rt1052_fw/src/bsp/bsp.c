@@ -33,6 +33,11 @@ void bspInit(void)
   BOARD_InitBootPeripherals();
 
   SysTick_Config(SystemCoreClock / 1000U);
+
+
+
+  SCB_EnableDCache();
+  SCB_EnableICache();
 }
 
 void bspDeInit(void)

@@ -1,9 +1,11 @@
 /*
  * uart.c
  *
- *  Created on: 2020. 3. 11.
- *      Author: Baram
+ *  Created on: 2020. 2. 18.
+ *      Author: HanCheol Cho
  */
+
+
 
 
 
@@ -14,7 +16,6 @@
 #include "vcp.h"
 #endif
 
-#include "fsl_lpuart.h"
 
 
 
@@ -76,6 +77,8 @@ bool uartInit(void)
     uart_tbl[i].hw_driver = UART_HW_NONE;
   }
 
+  DisableIRQ(LPUART1_SERIAL_RX_TX_IRQN);
+
   return true;
 }
 
@@ -110,6 +113,19 @@ bool uartOpen(uint8_t channel, uint32_t baud)
       LPUART_SetBaudRate(p_uart->handle, baud, LPUART1_CLOCK_SOURCE);
       EnableIRQ(LPUART1_SERIAL_RX_TX_IRQN);
 
+      uartStartRx(channel);
+      ret = true;
+      break;
+
+    case _DEF_UART2:
+      p_uart = &uart_tbl[channel];
+
+      p_uart->baud     = baud;
+      p_uart->is_open  = true;
+
+      p_uart->rx_mode  = UART_MODE_VCP;
+      p_uart->tx_mode  = UART_MODE_VCP;
+      p_uart->hw_driver = UART_HW_VCP;
       uartStartRx(channel);
       ret = true;
       break;
@@ -156,6 +172,13 @@ uint32_t uartGetBaud(uint8_t channel)
   {
     return 0;
   }
+
+#ifdef _USE_HW_VCP
+  if (uart_tbl[channel].hw_driver == UART_HW_VCP)
+  {
+    return vcpGetBaud();
+  }
+#endif
 
   return uart_tbl[channel].baud;
 }
