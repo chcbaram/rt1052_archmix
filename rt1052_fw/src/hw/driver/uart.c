@@ -106,7 +106,9 @@ bool uartOpen(uint8_t channel, uint32_t baud)
 
       p_uart->is_open  = true;
 
+      DisableIRQ(LPUART1_SERIAL_RX_TX_IRQN);
       LPUART_SetBaudRate(p_uart->handle, baud, LPUART1_CLOCK_SOURCE);
+      EnableIRQ(LPUART1_SERIAL_RX_TX_IRQN);
 
       uartStartRx(channel);
       ret = true;
@@ -234,6 +236,10 @@ int32_t uartWrite(uint8_t channel, uint8_t *p_data, uint32_t length)
   int32_t ret = 0;
   uart_t *p_uart = &uart_tbl[channel];
 
+  if (p_uart->is_open != true)
+  {
+    return 0;
+  }
 
 #ifdef _USE_HW_VCP
   if (p_uart->tx_mode == UART_MODE_VCP)
@@ -309,11 +315,18 @@ void uartRxHandler(uint8_t channel)
 void LPUART1_SERIAL_RX_TX_IRQHANDLER(void)
 {
   uint8_t data;
+  uint32_t status;
+
   uart_t *p_uart = &uart_tbl[_DEF_UART1];
 
-  if ((kLPUART_RxDataRegFullFlag)&LPUART_GetStatusFlags(p_uart->handle))
+  status = LPUART_GetStatusFlags(p_uart->handle);
+
+  if ((kLPUART_RxDataRegFullFlag) & status)
   {
     data = LPUART_ReadByte(p_uart->handle);
     qbufferWrite(&p_uart->qbuffer_rx, &data, 1);
   }
+
+
+  LPUART_ClearStatusFlags(p_uart->handle, status);
 }

@@ -15,6 +15,7 @@ pin_labels:
 - {pin_num: F14, pin_signal: GPIO_AD_B0_09, label: USER_LED_R}
 - {pin_num: G13, pin_signal: GPIO_AD_B0_10, label: USER_LED_G}
 - {pin_num: G10, pin_signal: GPIO_AD_B0_11, label: USER_LED_B}
+- {pin_num: L6, pin_signal: WAKEUP, label: USER_BUTTON}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -44,6 +45,7 @@ BOARD_InitPins:
   - {pin_num: G10, peripheral: GPIO1, signal: 'gpio_io, 11', pin_signal: GPIO_AD_B0_11, direction: OUTPUT, hysteresis_enable: Enable}
   - {pin_num: L14, peripheral: LPUART1, signal: RX, pin_signal: GPIO_AD_B0_13}
   - {pin_num: K14, peripheral: LPUART1, signal: TX, pin_signal: GPIO_AD_B0_12}
+  - {pin_num: L6, peripheral: GPIO5, signal: 'gpio_io, 00', pin_signal: WAKEUP, direction: INPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -55,6 +57,7 @@ BOARD_InitPins:
  * END ****************************************************************************************************************/
 void BOARD_InitPins(void) {
   CLOCK_EnableClock(kCLOCK_Iomuxc);           /* iomuxc clock (iomuxc_clk_enable): 0x03U */
+  CLOCK_EnableClock(kCLOCK_IomuxcSnvs);       /* iomuxc_snvs clock (iomuxc_snvs_clk_enable): 0x03U */
 
   /* GPIO configuration on GPIO_AD_B0_09 (pin F14) */
   gpio_pin_config_t gpio1_pinF14_config = {
@@ -83,6 +86,15 @@ void BOARD_InitPins(void) {
   /* Initialize GPIO functionality on GPIO_AD_B0_11 (pin G10) */
   GPIO_PinInit(GPIO1, 11U, &gpio1_pinG10_config);
 
+  /* GPIO configuration on WAKEUP (pin L6) */
+  gpio_pin_config_t gpio5_pinL6_config = {
+      .direction = kGPIO_DigitalInput,
+      .outputLogic = 0U,
+      .interruptMode = kGPIO_NoIntmode
+  };
+  /* Initialize GPIO functionality on WAKEUP (pin L6) */
+  GPIO_PinInit(GPIO5, 0U, &gpio5_pinL6_config);
+
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_AD_B0_09_GPIO1_IO09,        /* GPIO_AD_B0_09 is configured as GPIO1_IO09 */
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
@@ -97,6 +109,9 @@ void BOARD_InitPins(void) {
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_AD_B0_13_LPUART1_RX,        /* GPIO_AD_B0_13 is configured as LPUART1_RX */
+      0U);                                    /* Software Input On Field: Input Path is determined by functionality */
+  IOMUXC_SetPinMux(
+      IOMUXC_SNVS_WAKEUP_GPIO5_IO00,          /* WAKEUP is configured as GPIO5_IO00 */
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
   IOMUXC_SetPinConfig(
       IOMUXC_GPIO_AD_B0_09_GPIO1_IO09,        /* GPIO_AD_B0_09 PAD functional properties : */

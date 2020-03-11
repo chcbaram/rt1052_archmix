@@ -27,6 +27,7 @@
                <pin_label pin_num="F14" pin_signal="GPIO_AD_B0_09" label="USER_LED_R"/>
                <pin_label pin_num="G13" pin_signal="GPIO_AD_B0_10" label="USER_LED_G"/>
                <pin_label pin_num="G10" pin_signal="GPIO_AD_B0_11" label="USER_LED_B"/>
+               <pin_label pin_num="L6" pin_signal="WAKEUP" label="USER_BUTTON"/>
             </pin_labels>
          </pins_profile>
          <functions_list>
@@ -39,6 +40,11 @@
                </options>
                <dependencies>
                   <dependency resourceType="Peripheral" resourceId="LPUART1" description="Peripheral LPUART1 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="Peripheral" resourceId="GPIO5" description="Peripheral GPIO5 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
                      <feature name="initialized" evaluation="equal">
                         <data>true</data>
                      </feature>
@@ -84,6 +90,11 @@
                   </pin>
                   <pin peripheral="LPUART1" signal="RX" pin_num="L14" pin_signal="GPIO_AD_B0_13"/>
                   <pin peripheral="LPUART1" signal="TX" pin_num="K14" pin_signal="GPIO_AD_B0_12"/>
+                  <pin peripheral="GPIO5" signal="gpio_io, 00" pin_num="L6" pin_signal="WAKEUP">
+                     <pin_features>
+                        <pin_feature name="direction" value="INPUT"/>
+                     </pin_features>
+                  </pin>
                </pins>
             </function>
          </functions_list>
