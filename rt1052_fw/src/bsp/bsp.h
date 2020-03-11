@@ -15,6 +15,11 @@ extern "C" {
 
 #include "def.h"
 
+#include "config/board/clock_config.h"
+#include "config/board/pin_mux.h"
+#include "config/board/peripherals.h"
+
+
 
 #define logPrintf(...)    printf(__VA_ARGS__)
 
