@@ -23,6 +23,9 @@ extern "C" {
 #include "fsl_gpio.h"
 
 
+#define BOARD_FLASH_SIZE (0x800000U)
+
+
 
 #define logPrintf(...)    printf(__VA_ARGS__)
 

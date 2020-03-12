@@ -35,6 +35,8 @@ void bspInit(void)
   SysTick_Config(SystemCoreClock / 1000U);
 
 
+  DisableIRQ(LPUART1_SERIAL_RX_TX_IRQN);
+
 
   SCB_EnableDCache();
   SCB_EnableICache();

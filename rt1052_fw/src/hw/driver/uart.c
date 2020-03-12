@@ -77,8 +77,6 @@ bool uartInit(void)
     uart_tbl[i].hw_driver = UART_HW_NONE;
   }
 
-  DisableIRQ(LPUART1_SERIAL_RX_TX_IRQN);
-
   return true;
 }
 

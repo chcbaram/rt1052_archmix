@@ -51,7 +51,7 @@ void BOARD_InitBootClocks(void)
 name: BOARD_BootClockRUN
 called_from_default_init: true
 outputs:
-- {id: AHB_CLK_ROOT.outFreq, value: 600 MHz}
+- {id: AHB_CLK_ROOT.outFreq, value: 600 MHz, locked: true, accuracy: '0.001'}
 - {id: CAN_CLK_ROOT.outFreq, value: 40 MHz}
 - {id: CLK_1M.outFreq, value: 1 MHz}
 - {id: CLK_24M.outFreq, value: 24 MHz}
@@ -61,7 +61,7 @@ outputs:
 - {id: ENET_25M_REF_CLK.outFreq, value: 1.2 MHz}
 - {id: FLEXIO1_CLK_ROOT.outFreq, value: 30 MHz}
 - {id: FLEXIO2_CLK_ROOT.outFreq, value: 30 MHz}
-- {id: FLEXSPI_CLK_ROOT.outFreq, value: 60 MHz}
+- {id: FLEXSPI_CLK_ROOT.outFreq, value: 120 MHz, locked: true, accuracy: '0.001'}
 - {id: GPT1_ipg_clk_highfreq.outFreq, value: 50/11 MHz}
 - {id: GPT2_ipg_clk_highfreq.outFreq, value: 50/11 MHz}
 - {id: IPG_CLK_ROOT.outFreq, value: 150 MHz}
@@ -85,11 +85,13 @@ outputs:
 - {id: SEMC_CLK_ROOT.outFreq, value: 120 MHz}
 - {id: SPDIF0_CLK_ROOT.outFreq, value: 30 MHz}
 - {id: TRACE_CLK_ROOT.outFreq, value: 6 MHz}
-- {id: UART_CLK_ROOT.outFreq, value: 80 MHz}
+- {id: UART_CLK_ROOT.outFreq, value: 80 MHz, locked: true, accuracy: '0.001'}
 - {id: USBPHY1_CLK.outFreq, value: 480 MHz}
 - {id: USDHC1_CLK_ROOT.outFreq, value: 12 MHz}
 - {id: USDHC2_CLK_ROOT.outFreq, value: 12 MHz}
 settings:
+- {id: CCM.FLEXSPI_PODF.scale, value: '3', locked: true}
+- {id: CCM.FLEXSPI_SEL.sel, value: CCM_ANALOG.PLL3_PFD0_CLK}
 - {id: CCM.PERCLK_PODF.scale, value: '33'}
 - {id: CCM.SEMC_PODF.scale, value: '5'}
 - {id: CCM_ANALOG.PLL1_BYPASS.sel, value: CCM_ANALOG.PLL1}
@@ -99,6 +101,8 @@ settings:
 - {id: CCM_ANALOG.PLL2.num, value: '0'}
 - {id: CCM_ANALOG.PLL3_BYPASS.sel, value: CCM_ANALOG.PLL3}
 - {id: CCM_ANALOG.PLL3_PFD0_BYPASS.sel, value: CCM_ANALOG.PLL3_PFD0}
+- {id: CCM_ANALOG.PLL3_PFD0_DIV.scale, value: '24', locked: true}
+- {id: CCM_ANALOG.PLL3_PFD0_MUL.scale, value: '18', locked: true}
 - {id: CCM_ANALOG.PLL3_PFD1_BYPASS.sel, value: CCM_ANALOG.PLL3_PFD1}
 - {id: CCM_ANALOG.PLL3_PFD2_BYPASS.sel, value: CCM_ANALOG.PLL3_PFD2}
 - {id: CCM_ANALOG.PLL3_PFD3_BYPASS.sel, value: CCM_ANALOG.PLL3_PFD3}
@@ -216,9 +220,9 @@ void BOARD_BootClockRUN(void)
     /* Disable Flexspi clock gate. */
     CLOCK_DisableClock(kCLOCK_FlexSpi);
     /* Set FLEXSPI_PODF. */
-    CLOCK_SetDiv(kCLOCK_FlexspiDiv, 1);
+    CLOCK_SetDiv(kCLOCK_FlexspiDiv, 2);
     /* Set Flexspi clock source. */
-    CLOCK_SetMux(kCLOCK_FlexspiMux, 0);
+    CLOCK_SetMux(kCLOCK_FlexspiMux, 3);
 #endif
     /* Disable CSI clock gate. */
     CLOCK_DisableClock(kCLOCK_Csi);
@@ -360,7 +364,7 @@ void BOARD_BootClockRUN(void)
     /* Init Usb1 PLL. */
     CLOCK_InitUsb1Pll(&usb1PllConfig_BOARD_BootClockRUN);
     /* Init Usb1 pfd0. */
-    CLOCK_InitUsb1Pfd(kCLOCK_Pfd0, 12);
+    CLOCK_InitUsb1Pfd(kCLOCK_Pfd0, 24);
     /* Init Usb1 pfd1. */
     CLOCK_InitUsb1Pfd(kCLOCK_Pfd1, 16);
     /* Init Usb1 pfd2. */
