@@ -24,6 +24,7 @@ extern "C" {
 #include "swtimer.h"
 #include "button.h"
 #include "vcp.h"
+#include "flash.h"
 
 
 void hwInit(void);
