@@ -196,7 +196,7 @@ static void USB_DeviceEhciSetDefaultState(usb_device_ehci_state_struct_t *ehciSt
 
     /* Enable USB Interrupt, USB Error Interrupt, Port Change detect Interrupt, USB-Reset Interrupt*/
     ehciState->registerBase->USBINTR =
-        (USBHS_USBINTR_UE_MASK | USBHS_USBINTR_UEE_MASK | USBHS_USBINTR_PCE_MASK | USBHS_USBINTR_URE_MASK
+        (USBHS_USBINTR_UE_MASK | USBHS_USBINTR_UEE_MASK | USBHS_USBINTR_PCE_MASK | USBHS_USBINTR_URE_MASK | USBHS_USBINTR_SRE_MASK // @chcbaram added SoF Interrupt
 #if (defined(USB_DEVICE_CONFIG_LOW_POWER_MODE) && (USB_DEVICE_CONFIG_LOW_POWER_MODE > 0U))
          | USBHS_USBINTR_SLE_MASK
 #endif /* USB_DEVICE_CONFIG_LOW_POWER_MODE */
@@ -839,6 +839,12 @@ static void USB_DeviceEhciInterruptReset(usb_device_ehci_state_struct_t *ehciSta
     }
 }
 
+
+__attribute__ ((weak)) void USB_SoF_IRQHandler(void)
+{
+
+}
+
 /*!
  * @brief Handle the sof interrupt.
  *
@@ -849,7 +855,7 @@ static void USB_DeviceEhciInterruptReset(usb_device_ehci_state_struct_t *ehciSta
  */
 static void USB_DeviceEhciInterruptSof(usb_device_ehci_state_struct_t *ehciState)
 {
-
+  USB_SoF_IRQHandler();
 }
 
 #if (defined(USB_DEVICE_CONFIG_LOW_POWER_MODE) && (USB_DEVICE_CONFIG_LOW_POWER_MODE > 0U))
@@ -1782,6 +1788,7 @@ usb_status_t USB_DeviceEhciControl(usb_device_controller_handle ehciHandle, usb_
  * @param deviceHandle    The device handle got from USB_DeviceInit.
  *
  */
+
 void USB_DeviceEhciIsrFunction(void *deviceHandle)
 {
     usb_device_struct_t *handle = (usb_device_struct_t *)deviceHandle;

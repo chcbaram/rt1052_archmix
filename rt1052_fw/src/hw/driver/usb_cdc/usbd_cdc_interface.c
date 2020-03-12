@@ -29,6 +29,11 @@
 #define BOARD_USB_PHY_TXCAL45DM (0x06U)
 
 
+#define APP_RX_DATA_SIZE  2048
+#define APP_TX_DATA_SIZE  2048
+
+
+
 
 /*******************************************************************************
 * Definitions
@@ -52,9 +57,10 @@ int32_t  CDC_Itf_Write( uint8_t *p_buf, uint32_t length );
 uint8_t  CDC_Itf_Getch( void );
 uint8_t  CDC_Itf_Read( void );
 uint32_t CDC_Itf_TxBufLengh( void );
+uint8_t  CDC_Itf_TxRead( void );
 bool CDC_Itf_IsConnected(void);
 void CDC_Itf_Flush( void );
-
+void CDC_Itf_TxISR(void);
 
 
 
@@ -96,8 +102,8 @@ USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE) static uint8_t s_countryCode[COMM_F
 /* CDC ACM information */
 USB_DMA_NONINIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE) static usb_cdc_acm_info_t s_usbCdcAcmInfo;
 /* Data buffer for receiving and sending*/
-USB_DMA_NONINIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE) static uint8_t s_currRecvBuf[DATA_BUFF_SIZE];
-USB_DMA_NONINIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE) static uint8_t s_currSendBuf[DATA_BUFF_SIZE];
+USB_DMA_NONINIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE) static uint8_t s_currRecvBuf[APP_RX_DATA_SIZE];
+USB_DMA_NONINIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE) static uint8_t s_currSendBuf[APP_TX_DATA_SIZE];
 volatile static uint32_t s_recvSize = 0;
 volatile static uint32_t s_sendSize = 0;
 
@@ -122,15 +128,18 @@ volatile static uint8_t s_comOpen = 0;
 ******************************************************************************/
 
 
-#define APP_RX_DATA_SIZE  2048
-#define APP_TX_DATA_SIZE  2048
 
+volatile bool usb_rx_full = false;
 
 volatile uint8_t  rxd_buffer[APP_RX_DATA_SIZE];
 volatile uint32_t rxd_length    = 0;
 volatile uint32_t rxd_BufPtrIn  = 0;
 volatile uint32_t rxd_BufPtrOut = 0;
 
+volatile uint8_t  txd_buffer[APP_TX_DATA_SIZE];
+volatile uint32_t txd_length    = 0;
+volatile uint32_t txd_BufPtrIn  = 0;
+volatile uint32_t txd_BufPtrOut = 0;
 
 
 
@@ -179,6 +188,52 @@ void USB_DeviceIsrEnable(void)
     EnableIRQ((IRQn_Type)irqNumber);
 }
 
+
+
+void USB_SoF_IRQHandler(void)
+{
+  uint32_t rx_buf_length;
+
+
+  rx_buf_length = APP_RX_DATA_SIZE - CDC_Itf_RxAvailable() - 1;
+
+  // 수신버퍼가 USB 전송 패킷 이상 남았을때만 수신하도록 함.
+  if (usb_rx_full == true)
+  {
+    if (rx_buf_length >= g_UsbDeviceCdcVcomDicEndpoints[0].maxPacketSize)
+    {
+      USB_DeviceCdcAcmRecv(s_cdcVcom.cdcAcmHandle, USB_CDC_VCOM_BULK_OUT_ENDPOINT, s_currRecvBuf, rx_buf_length);
+      usb_rx_full = false;
+    }
+  }
+
+  CDC_Itf_TxISR();
+}
+
+void CDC_Itf_TxISR(void)
+{
+  uint32_t buffsize;
+  usb_device_cdc_acm_struct_t *cdcAcmHandle;
+  cdcAcmHandle = (usb_device_cdc_acm_struct_t *)s_cdcVcom.cdcAcmHandle;
+
+
+  if (s_cdcVcom.attach != 1 || s_cdcVcom.startTransactions != 1) return;
+  if(cdcAcmHandle->bulkIn.isBusy == 1) return;
+
+  buffsize = CDC_Itf_TxBufLengh();
+
+  if (buffsize == 0) return;
+
+  for (int i=0; i<buffsize; i++)
+  {
+    s_currSendBuf[i] = CDC_Itf_TxRead();
+  }
+
+
+  USB_DeviceCdcAcmSend(s_cdcVcom.cdcAcmHandle, USB_CDC_VCOM_BULK_IN_ENDPOINT, s_currSendBuf, buffsize);
+}
+
+
 /*!
  * @brief CDC class specific callback function.
  *
@@ -220,15 +275,6 @@ usb_status_t USB_DeviceCdcVcomCallback(class_handle_t handle, uint32_t event, vo
                 if ((epCbParam->buffer != NULL) || ((epCbParam->buffer == NULL) && (epCbParam->length == 0)))
                 {
                     /* User: add your own code for send complete event */
-                    /* Schedule buffer for next receive event */
-                    error = USB_DeviceCdcAcmRecv(handle, USB_CDC_VCOM_BULK_OUT_ENDPOINT, s_currRecvBuf,
-                                                 g_UsbDeviceCdcVcomDicEndpoints[0].maxPacketSize);
-#if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
-    defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
-    defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
-                    s_waitForDataReceive = 1;
-                    USB0->INTEN &= ~USB_INTEN_SOFTOKEN_MASK;
-#endif
                 }
             }
             else
@@ -241,7 +287,6 @@ usb_status_t USB_DeviceCdcVcomCallback(class_handle_t handle, uint32_t event, vo
             if ((1 == s_cdcVcom.attach) && (1 == s_cdcVcom.startTransactions))
             {
                 s_recvSize = epCbParam->length;
-
 
                 for( i=0; i<epCbParam->length; i++ )
                 {
@@ -256,25 +301,19 @@ usb_status_t USB_DeviceCdcVcomCallback(class_handle_t handle, uint32_t event, vo
                   }
                 }
 
+                uint32_t rx_buf_len;
 
-#if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
-    defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
-    defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
-                s_waitForDataReceive = 0;
-                USB0->INTEN |= USB_INTEN_SOFTOKEN_MASK;
-#endif
-                //if (!s_recvSize)
-                //if ((APP_RX_DATA_SIZE - CDC_Itf_RxAvailable() - 1) >= g_UsbDeviceCdcVcomDicEndpoints[0].maxPacketSize)
+                rx_buf_len = APP_RX_DATA_SIZE - CDC_Itf_RxAvailable() - 1;
+
+
+                if (rx_buf_len >= g_UsbDeviceCdcVcomDicEndpoints[0].maxPacketSize)
                 {
-                    /* Schedule buffer for next receive event */
-                    error = USB_DeviceCdcAcmRecv(handle, USB_CDC_VCOM_BULK_OUT_ENDPOINT, s_currRecvBuf,
-                                                 g_UsbDeviceCdcVcomDicEndpoints[0].maxPacketSize);
-#if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
-    defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
-    defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
-                    s_waitForDataReceive = 1;
-                    USB0->INTEN &= ~USB_INTEN_SOFTOKEN_MASK;
-#endif
+                  /* Schedule buffer for next receive event */
+                  error = USB_DeviceCdcAcmRecv(handle, USB_CDC_VCOM_BULK_OUT_ENDPOINT, s_currRecvBuf, rx_buf_len);
+                }
+                else
+                {
+                  usb_rx_full = true;
                 }
             }
         }
@@ -448,6 +487,8 @@ usb_status_t USB_DeviceCdcVcomCallback(class_handle_t handle, uint32_t event, vo
     return error;
 }
 
+
+
 /*!
  * @brief USB device callback function.
  *
@@ -543,54 +584,17 @@ usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event, void *
 }
 
 
-
-/*!
- * @brief Application task function.
- *
- * This function runs the task for application.
- *
- * @return None.
- */
-void APPTask(void)
-{
-    usb_status_t error = kStatus_USB_Error;
-    if ((1 == s_cdcVcom.attach) && (1 == s_cdcVcom.startTransactions))
-    {
-        /* User Code */
-        if ((0 != s_recvSize) && (0xFFFFFFFFU != s_recvSize))
-        {
-            int32_t i;
-
-            /* Copy Buffer to Send Buff */
-            for (i = 0; i < s_recvSize; i++)
-            {
-                s_currSendBuf[s_sendSize++] = s_currRecvBuf[i];
-            }
-            s_recvSize = 0;
-        }
-
-        if (s_sendSize)
-        {
-            uint32_t size = s_sendSize;
-            s_sendSize = 0;
-
-            error = USB_DeviceCdcAcmSend(s_cdcVcom.cdcAcmHandle, USB_CDC_VCOM_BULK_IN_ENDPOINT, s_currSendBuf, size);
-
-            if (error != kStatus_USB_Success)
-            {
-                /* Failure to send Data Handling code here */
-            }
-        }
-    }
-}
-
-
-
-
-
-
 void CDC_Itf_Init(void)
 {
+  rxd_length      = 0;
+  rxd_BufPtrIn    = 0;
+  rxd_BufPtrOut   = 0;
+
+  txd_length      = 0;
+  txd_BufPtrIn    = 0;
+  txd_BufPtrOut   = 0;
+
+
   USB_DeviceClockInit();
 
   s_cdcVcom.speed = USB_SPEED_FULL;
@@ -642,17 +646,51 @@ uint32_t CDC_Itf_RxAvailable( void )
   return length;
 }
 
+uint32_t CDC_Itf_TxBufLengh( void )
+{
+  uint32_t length = 0;
+
+
+  length = (APP_TX_DATA_SIZE + txd_BufPtrIn - txd_BufPtrOut) % APP_TX_DATA_SIZE;
+
+  return length;
+}
+
 int32_t  CDC_Itf_Write( uint8_t *p_buf, uint32_t length )
 {
-  usb_status_t error = kStatus_USB_Error;
+  uint32_t i;
+  uint32_t ptr_index;
 
 
-  error = USB_DeviceCdcAcmSend(s_cdcVcom.cdcAcmHandle, USB_CDC_VCOM_BULK_IN_ENDPOINT, p_buf, length);
-
-  if (error != kStatus_USB_Success)
+  if (s_cdcVcom.attach != 1 || s_cdcVcom.startTransactions != 1)
   {
     return -1;
   }
+
+  if (length >= CDC_Itf_TxAvailable())
+  {
+    return 0;
+  }
+
+  ptr_index = txd_BufPtrIn;
+
+
+  for (i=0; i<length; i++)
+  {
+
+    txd_buffer[ptr_index] = p_buf[i];
+
+    ptr_index++;
+
+    /* To avoid buffer overflow */
+    if(ptr_index == APP_TX_DATA_SIZE)
+    {
+      ptr_index = 0;
+    }
+  }
+  txd_BufPtrIn = ptr_index;
+
+
 
   return length;
 }
@@ -689,6 +727,27 @@ uint8_t  CDC_Itf_Read( void )
 
   return ch;
 }
+
+uint8_t CDC_Itf_TxRead( void )
+{
+  uint8_t ch = 0;
+  uint32_t buffptr;
+
+
+  buffptr = txd_BufPtrOut;
+
+  ch = txd_buffer[buffptr];
+
+
+  txd_BufPtrOut += 1;
+  if (txd_BufPtrOut >= APP_TX_DATA_SIZE)
+  {
+    txd_BufPtrOut = 0;
+  }
+
+  return ch;
+}
+
 
 bool CDC_Itf_IsConnected(void)
 {
