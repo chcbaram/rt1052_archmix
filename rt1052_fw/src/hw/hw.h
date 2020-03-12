@@ -25,6 +25,8 @@ extern "C" {
 #include "button.h"
 #include "vcp.h"
 #include "flash.h"
+#include "qspi.h"
+#include "clocks.h"
 
 
 void hwInit(void);

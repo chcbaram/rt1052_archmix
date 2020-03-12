@@ -40,4 +40,7 @@ void hwInit(void)
   vcpInit();
   uartInit();
   uartOpen(_DEF_UART1, 57600);
+
+  clocksInit();
+  qspiInit();
 }

@@ -9,7 +9,7 @@
 
 
 #include "bsp.h"
-
+#include "uart.h"
 
 
 
@@ -32,6 +32,7 @@ void bspInit(void)
   BOARD_InitBootClocks();
   BOARD_InitBootPeripherals();
 
+
   SysTick_Config(SystemCoreClock / 1000U);
 
 
@@ -44,6 +45,12 @@ void bspInit(void)
 
 void bspDeInit(void)
 {
+}
+
+int __io_putchar(int ch)
+{
+  uartWrite(_DEF_UART1, (uint8_t *)&ch, 1);
+  return 1;
 }
 
 void delay(uint32_t ms)
