@@ -31,6 +31,7 @@ extern "C" {
 #include "gpio.h"
 #include "sd.h"
 #include "micros.h"
+#include "reset.h"
 
 
 #include "fatfs/fatfs.h"

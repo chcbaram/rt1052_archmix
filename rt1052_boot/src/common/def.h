@@ -42,6 +42,12 @@
 #define _DEF_OUTPUT_PULLDOWN        5
 
 
+#define _DEF_RESET_POWER            0
+#define _DEF_RESET_PIN              1
+#define _DEF_RESET_WDG              2
+#define _DEF_RESET_SOFT             3
+
+
 
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
 

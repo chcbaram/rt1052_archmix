@@ -48,6 +48,7 @@ void hwInit(void)
   swtimerInit();
   cmdifInit();
 
+  resetInit();
   ledInit();
   buttonInit();
   vcpInit();
@@ -59,7 +60,7 @@ void hwInit(void)
   logPrintf("Addr Fw    \t\t: 0x%X\r\n", (int)fw_tag.addr_fw);
   logPrintf("Addr Hw    \t\t: 0x%X\r\n", (int)hwInit);
 
-
+  resetLog();
   clocksInit();
   //flashInit();
 

@@ -32,9 +32,11 @@ void hwInit(void)
 {
   bspInit();
 
+
   microsInit();
   swtimerInit();
   cmdifInit();
+  resetInit();
 
   ledInit();
   buttonInit();
@@ -47,8 +49,9 @@ void hwInit(void)
   logPrintf("Booting..Ver  \t\t: %s\r\n", boot_tag.boot_ver);
 
   logPrintf("Tag Addr   \t\t: 0x%X\r\n", (int)&boot_tag);
+  logPrintf("Boot Mode  \t\t: 0x%X\r\n", (int)resetGetBootMode());
 
-
+  resetLog();
   clocksInit();
   flashInit();
   sdramInit();
