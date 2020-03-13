@@ -42,6 +42,8 @@ void apMain(void)
     {
       uartPrintf(_DEF_UART2, "rx : 0x%X \n", uartRead(_DEF_UART2));
     }
+
+    osThreadYield();
   }
 }
 
