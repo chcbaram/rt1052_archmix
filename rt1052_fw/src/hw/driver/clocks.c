@@ -63,14 +63,6 @@ bool clocksInit(void)
   CLOCK_SetMux(kCLOCK_SemcMux, 0);
 
 
-  // For FlexSPI2
-  //
-  CLOCK_SetDiv(kCLOCK_Flexspi2Div, 2);
-  /* Set Flexspi2 clock source. */
-  CLOCK_SetMux(kCLOCK_Flexspi2Mux, 1);
-
-
-
   // For PLL3
   //
   /* Init Usb1 pfd0. */
@@ -95,6 +87,9 @@ bool clocksInit(void)
   CLOCK_InitSysPfd(kCLOCK_Pfd3, 16);
 
 #endif
+
+
+
 #ifdef _USE_HW_CMDIF
   clocksCmdifInit();
 #endif

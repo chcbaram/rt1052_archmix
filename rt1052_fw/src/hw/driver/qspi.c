@@ -66,6 +66,8 @@ uint8_t BSP_QSPI_Reset(void);
 
 
 
+
+
 bool qspiInit(void)
 {
   bool ret = true;
@@ -84,14 +86,14 @@ bool qspiInit(void)
 
   if (BSP_QSPI_GetID(&info) == QSPI_OK)
   {
-    if (info.device_id[0] == 0xEF && info.device_id[1] == 0x40 && info.device_id[2] == 0x18)
+    if (info.device_id[0] == 0x9D && info.device_id[1] == 0x70 && info.device_id[2] == 0x17)
     {
-      logPrintf("W25Q128FV(SPI Mode)    \t: OK\r\n");
+      logPrintf("IS25WP064A    \t: OK\r\n");
       ret = true;
     }
     else
     {
-      logPrintf("W25Q128FV   \t : Fail %X %X %X\r\n", info.device_id[0], info.device_id[1], info.device_id[2]);
+      logPrintf("IS25WP064A   \t : Fail %X %X %X\r\n", info.device_id[0], info.device_id[1], info.device_id[2]);
       ret = false;
     }
   }
@@ -323,10 +325,13 @@ uint32_t qspiGetLength(void)
 
 
 
+
+
+
 void flexspi_nor_flash_init(FLEXSPI_Type *base);
 status_t flexspi_nor_get_vendor_id(FLEXSPI_Type *base, uint8_t *vendorId);
-
-
+status_t flexspi_nor_enable_quad_mode(FLEXSPI_Type *base);
+status_t flexspi_nor_flash_read(FLEXSPI_Type *base, uint32_t addr, uint8_t *p_data, uint32_t length);
 
 
 static bool init_msg = true;
@@ -334,20 +339,18 @@ static bool init_msg = true;
 
 uint8_t BSP_QSPI_Init(void)
 {
+  status_t status;
+
+
   flexspi_nor_flash_init(FLEXSPI);
 
 
-  status_t status;
-  uint8_t vendorID = 0;
-
-  /* Get vendor ID. */
-  status = flexspi_nor_get_vendor_id(FLEXSPI, &vendorID);
+  /* Enter quad mode. */
+  status = flexspi_nor_enable_quad_mode(FLEXSPI);
   if (status != kStatus_Success)
   {
-    printf("Vendor ID: error\r\n");
-      return QSPI_ERROR;
+    return QSPI_ERROR;
   }
-  printf("Vendor ID: 0x%x\r\n", vendorID);
 
 
   return QSPI_OK;
@@ -383,6 +386,15 @@ uint8_t BSP_QSPI_DeInit(void)
   */
 uint8_t BSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size)
 {
+  status_t status;
+
+  status = flexspi_nor_flash_read(FLEXSPI, ReadAddr, pData, Size);
+
+  printf("%X %d %d\n", ReadAddr, Size, status);
+  if (status != kStatus_Success)
+  {
+    return QSPI_ERROR;
+  }
 
   return QSPI_OK;
 }
@@ -430,6 +442,14 @@ uint8_t BSP_QSPI_GetStatus(void)
 
 uint8_t BSP_QSPI_GetID(QSPI_Info* pInfo)
 {
+  status_t status;
+
+  status = flexspi_nor_get_vendor_id(FLEXSPI, pInfo->device_id);
+
+  if (status != kStatus_Success)
+  {
+    return QSPI_ERROR;
+  }
 
   return QSPI_OK;
 }
@@ -456,31 +476,35 @@ uint8_t BSP_QSPI_EnableMemoryMappedMode(void)
 
 
 
-#define NOR_CMD_LUT_SEQ_IDX_READ_NORMAL 7
-#define NOR_CMD_LUT_SEQ_IDX_READ_FAST 13
-#define NOR_CMD_LUT_SEQ_IDX_READ_FAST_QUAD 0
-#define NOR_CMD_LUT_SEQ_IDX_READSTATUS 1
-#define NOR_CMD_LUT_SEQ_IDX_WRITEENABLE 2
-#define NOR_CMD_LUT_SEQ_IDX_ERASESECTOR 3
-#define NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_SINGLE 6
-#define NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_QUAD 4
-#define NOR_CMD_LUT_SEQ_IDX_READID 8
-#define NOR_CMD_LUT_SEQ_IDX_WRITESTATUSREG 9
-#define NOR_CMD_LUT_SEQ_IDX_ENTERQPI 10
-#define NOR_CMD_LUT_SEQ_IDX_EXITQPI 11
-#define NOR_CMD_LUT_SEQ_IDX_READSTATUSREG 12
-#define NOR_CMD_LUT_SEQ_IDX_ERASECHIP 5
 
-#define CUSTOM_LUT_LENGTH 60
-#define FLASH_QUAD_ENABLE 0x40
-#define FLASH_BUSY_STATUS_POL 1
-#define FLASH_BUSY_STATUS_OFFSET 0
+
+
+
+#define NOR_CMD_LUT_SEQ_IDX_READ_NORMAL         7
+#define NOR_CMD_LUT_SEQ_IDX_READ_FAST           13
+#define NOR_CMD_LUT_SEQ_IDX_READ_FAST_QUAD      0
+#define NOR_CMD_LUT_SEQ_IDX_READSTATUS          1
+#define NOR_CMD_LUT_SEQ_IDX_WRITEENABLE         2
+#define NOR_CMD_LUT_SEQ_IDX_ERASESECTOR         3
+#define NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_SINGLE  6
+#define NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_QUAD    4
+#define NOR_CMD_LUT_SEQ_IDX_READID              8
+#define NOR_CMD_LUT_SEQ_IDX_WRITESTATUSREG      9
+#define NOR_CMD_LUT_SEQ_IDX_ENTERQPI            10
+#define NOR_CMD_LUT_SEQ_IDX_EXITQPI             11
+#define NOR_CMD_LUT_SEQ_IDX_READSTATUSREG       12
+#define NOR_CMD_LUT_SEQ_IDX_ERASECHIP           5
+
+#define CUSTOM_LUT_LENGTH         60
+#define FLASH_QUAD_ENABLE         0x40
+#define FLASH_BUSY_STATUS_POL     1
+#define FLASH_BUSY_STATUS_OFFSET  0
 
 
 
 flexspi_device_config_t deviceconfig = {
     .flexspiRootClk       = 120000000,
-    .flashSize            = QSPI_FLASH_SIZE,
+    .flashSize            = QSPI_FLASH_SIZE/1024,
     .CSIntervalUnit       = kFLEXSPI_CsIntervalUnit1SckCycle,
     .CSInterval           = 2,
     .CSHoldTime           = 3,
@@ -566,11 +590,322 @@ const uint32_t customLUT[CUSTOM_LUT_LENGTH] = {
 
 
 
+
+status_t flexspi_nor_write_enable(FLEXSPI_Type *base, uint32_t baseAddr)
+{
+    flexspi_transfer_t flashXfer;
+    status_t status;
+
+    /* Write enable */
+    flashXfer.deviceAddress = baseAddr;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Command;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_WRITEENABLE;
+
+    status = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+    return status;
+}
+
+status_t flexspi_nor_wait_bus_busy(FLEXSPI_Type *base)
+{
+    /* Wait status ready. */
+    bool isBusy;
+    uint32_t readValue;
+    status_t status;
+    flexspi_transfer_t flashXfer;
+
+    flashXfer.deviceAddress = 0;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Read;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_READSTATUSREG;
+    flashXfer.data          = &readValue;
+    flashXfer.dataSize      = 1;
+
+    do
+    {
+        status = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+        if (status != kStatus_Success)
+        {
+            return status;
+        }
+        if (FLASH_BUSY_STATUS_POL)
+        {
+            if (readValue & (1U << FLASH_BUSY_STATUS_OFFSET))
+            {
+                isBusy = true;
+            }
+            else
+            {
+                isBusy = false;
+            }
+        }
+        else
+        {
+            if (readValue & (1U << FLASH_BUSY_STATUS_OFFSET))
+            {
+                isBusy = false;
+            }
+            else
+            {
+                isBusy = true;
+            }
+        }
+
+    } while (isBusy);
+
+    return status;
+}
+
+status_t flexspi_nor_enable_quad_mode(FLEXSPI_Type *base)
+{
+    flexspi_transfer_t flashXfer;
+    status_t status;
+    uint32_t writeValue = FLASH_QUAD_ENABLE;
+
+    /* Write enable */
+    status = flexspi_nor_write_enable(base, 0);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    /* Enable quad mode. */
+    flashXfer.deviceAddress = 0;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Write;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_WRITESTATUSREG;
+    flashXfer.data          = &writeValue;
+    flashXfer.dataSize      = 1;
+
+    status = FLEXSPI_TransferBlocking(base, &flashXfer);
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    status = flexspi_nor_wait_bus_busy(base);
+
+    /* Do software reset. */
+    FLEXSPI_SoftwareReset(base);
+
+    return status;
+}
+
+status_t flexspi_nor_flash_erase_sector(FLEXSPI_Type *base, uint32_t address)
+{
+    status_t status;
+    flexspi_transfer_t flashXfer;
+
+    /* Write enable */
+    flashXfer.deviceAddress = address;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Command;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_WRITEENABLE;
+
+    status = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    flashXfer.deviceAddress = address;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Command;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_ERASESECTOR;
+    status                  = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    status = flexspi_nor_wait_bus_busy(base);
+
+    /* Do software reset. */
+    FLEXSPI_SoftwareReset(base);
+
+    return status;
+}
+
+status_t flexspi_nor_flash_program(FLEXSPI_Type *base, uint32_t dstAddr, const uint32_t *src, uint32_t length)
+{
+    status_t status;
+    flexspi_transfer_t flashXfer;
+
+    /* Write enable */
+    status = flexspi_nor_write_enable(base, dstAddr);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    /* Prepare page program command */
+    flashXfer.deviceAddress = dstAddr;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Write;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_QUAD;
+    flashXfer.data          = (uint32_t *)src;
+    flashXfer.dataSize      = length;
+    status                  = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    status = flexspi_nor_wait_bus_busy(base);
+
+    /* Do software reset. */
+#if defined(FSL_FEATURE_SOC_OTFAD_COUNT)
+    base->AHBCR |= FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK;
+    base->AHBCR &= ~(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK);
+#else
+    FLEXSPI_SoftwareReset(base);
+#endif
+
+    return status;
+}
+
+status_t flexspi_nor_flash_page_program(FLEXSPI_Type *base, uint32_t dstAddr, const uint32_t *src)
+{
+    status_t status;
+    flexspi_transfer_t flashXfer;
+
+    /* Write enable */
+    status = flexspi_nor_write_enable(base, dstAddr);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    /* Prepare page program command */
+    flashXfer.deviceAddress = dstAddr;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Write;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_QUAD;
+    flashXfer.data          = (uint32_t *)src;
+    flashXfer.dataSize      = QSPI_PAGE_SIZE;
+    status                  = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    status = flexspi_nor_wait_bus_busy(base);
+
+    /* Do software reset. */
+#if defined(FSL_FEATURE_SOC_OTFAD_COUNT)
+    base->AHBCR |= FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK;
+    base->AHBCR &= ~(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK);
+#else
+    FLEXSPI_SoftwareReset(base);
+#endif
+
+    return status;
+}
+
+status_t flexspi_nor_get_vendor_id(FLEXSPI_Type *base, uint8_t *vendorId)
+{
+    uint32_t temp;
+    flexspi_transfer_t flashXfer;
+    flashXfer.deviceAddress = 0;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Read;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_READID;
+    flashXfer.data          = &temp;
+    flashXfer.dataSize      = 3;
+
+    status_t status = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+    vendorId[0] = temp;
+    vendorId[1] = temp>>8;
+    vendorId[2] = temp>>16;
+
+    /* Do software reset. */
+#if defined(FSL_FEATURE_SOC_OTFAD_COUNT)
+    base->AHBCR |= FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK;
+    base->AHBCR &= ~(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK);
+#else
+    FLEXSPI_SoftwareReset(base);
+#endif
+
+    return status;
+}
+
+status_t flexspi_nor_erase_chip(FLEXSPI_Type *base)
+{
+    status_t status;
+    flexspi_transfer_t flashXfer;
+
+    /* Write enable */
+    status = flexspi_nor_write_enable(base, 0);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    flashXfer.deviceAddress = 0;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Command;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_ERASECHIP;
+
+    status = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    status = flexspi_nor_wait_bus_busy(base);
+
+    return status;
+}
+
+status_t flexspi_nor_flash_read(FLEXSPI_Type *base, uint32_t addr, uint8_t *p_data, uint32_t length)
+{
+    flexspi_transfer_t flashXfer;
+    flashXfer.deviceAddress = 0;
+    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.cmdType       = kFLEXSPI_Read;
+    flashXfer.SeqNumber     = 1;
+    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_READ_NORMAL;
+    flashXfer.data          = (uint32_t *)p_data;
+    flashXfer.dataSize      = length;
+
+    status_t status = FLEXSPI_TransferBlocking(base, &flashXfer);
+
+
+    /* Do software reset. */
+#if defined(FSL_FEATURE_SOC_OTFAD_COUNT)
+    base->AHBCR |= FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK;
+    base->AHBCR &= ~(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK);
+#else
+    FLEXSPI_SoftwareReset(base);
+#endif
+
+    return status;
+}
+
 void flexspi_nor_flash_init(FLEXSPI_Type *base)
 {
     flexspi_config_t config;
-
-    //flexspi_clock_init();
 
     /*Get FLEXSPI default settings and configure the flexspi. */
     FLEXSPI_GetDefaultConfig(&config);
@@ -593,29 +928,4 @@ void flexspi_nor_flash_init(FLEXSPI_Type *base)
     FLEXSPI_SoftwareReset(base);
 }
 
-status_t flexspi_nor_get_vendor_id(FLEXSPI_Type *base, uint8_t *vendorId)
-{
-    uint32_t temp;
-    flexspi_transfer_t flashXfer;
-    flashXfer.deviceAddress = 0;
-    flashXfer.port          = kFLEXSPI_PortA1;
-    flashXfer.cmdType       = kFLEXSPI_Read;
-    flashXfer.SeqNumber     = 1;
-    flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_READID;
-    flashXfer.data          = &temp;
-    flashXfer.dataSize      = 1;
 
-    status_t status = FLEXSPI_TransferBlocking(base, &flashXfer);
-
-    *vendorId = temp;
-
-    /* Do software reset. */
-#if defined(FSL_FEATURE_SOC_OTFAD_COUNT)
-    base->AHBCR |= FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK;
-    base->AHBCR &= ~(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK);
-#else
-    FLEXSPI_SoftwareReset(base);
-#endif
-
-    return status;
-}

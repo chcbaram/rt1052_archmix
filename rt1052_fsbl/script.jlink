@@ -1,7 +1,7 @@
 ExitOnError 1
 r
-exec EnableEraseAllFlashBanks
-erase
+h
+loadfile "D:\git\rt1052_archmix\rt1052_fsbl\Debug\rt1052_fsbl.hex"
 qc
 
 qc

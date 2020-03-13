@@ -25,6 +25,7 @@ void SysTick_Handler(void)
 }
 
 
+extern void qspiInit(void);
 
 void bspInit(void)
 {

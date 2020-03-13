@@ -14,7 +14,6 @@
 
 
 #define _USE_HW_CLOCKS
-#define _USE_HW_QSPI
 #define _USE_HW_FLASH
 
 
