@@ -36,6 +36,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.732601646" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/sdmmc/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class/cdc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source/ehci}&quot;"/>
@@ -78,6 +79,7 @@
 								<option id="com.crt.advproject.gcc.specs.1905802934" name="Specs" superClass="com.crt.advproject.gcc.specs" useByScannerDiscovery="false" value="com.crt.advproject.gcc.specs.newlibnano" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1288082510" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/phy}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/sdmmc/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class/cdc}&quot;"/>
@@ -104,6 +106,8 @@
 								<option id="gnu.c.compiler.option.misc.other.1567618383" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -ffunction-sections -fdata-sections -ffreestanding -fno-builtin" valueType="string"/>
 								<option id="com.crt.advproject.gcc.arch.161890221" name="Architecture" superClass="com.crt.advproject.gcc.arch" useByScannerDiscovery="true"/>
 								<option id="gnu.c.compiler.option.optimization.flags.584605084" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-fno-common" valueType="string"/>
+								<option id="com.crt.advproject.gcc.lto.1227927117" name="Enable Link-time optimization (-flto)" superClass="com.crt.advproject.gcc.lto" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.exe.debug.option.optimization.level.837538147" superClass="com.crt.advproject.gcc.exe.debug.option.optimization.level" useByScannerDiscovery="true" value="gnu.c.optimization.level.size" valueType="enumerated"/>
 								<inputType id="com.crt.advproject.compiler.input.977771606" superClass="com.crt.advproject.compiler.input"/>
 							</tool>
 							<tool id="com.crt.advproject.gas.exe.debug.527210222" name="MCU Assembler" superClass="com.crt.advproject.gas.exe.debug">
@@ -152,7 +156,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src/lib/sdk/drivers/fsl_lpi2c_freertos.c|src/lib/sdk/drivers/fsl_lpuart_freertos.c|src/lib/sdk/drivers/fsl_lpspi_freertos.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/lib/FatFs/src/option/ccsbcs.c|src/lib/FatFs/src/option/cc950.c|src/lib/FatFs/src/option/cc949.c|src/lib/FatFs/src/option/cc936.c|src/lib/FatFs/src/option/cc932.c|src/lib/sdk/drivers/fsl_lpi2c_freertos.c|src/lib/sdk/drivers/fsl_lpuart_freertos.c|src/lib/sdk/drivers/fsl_lpspi_freertos.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -213,7 +217,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src/lib/sdk/drivers/fsl_lpi2c_freertos.c|src/lib/sdk/drivers/fsl_lpuart_freertos.c|src/lib/sdk/drivers/fsl_lpspi_freertos.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/lib/FatFs/src/option/ccsbcs.c|src/lib/FatFs/src/option/cc950.c|src/lib/FatFs/src/option/cc949.c|src/lib/FatFs/src/option/cc936.c|src/lib/FatFs/src/option/cc932.c|src/lib/sdk/drivers/fsl_lpi2c_freertos.c|src/lib/sdk/drivers/fsl_lpuart_freertos.c|src/lib/sdk/drivers/fsl_lpspi_freertos.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

@@ -45,5 +45,9 @@ void hwInit(void)
   flashInit();
   sdramInit();
   gpioInit();
-  sdInit();
+
+  if (sdInit() == true)
+  {
+    fatfsInit();
+  }
 }

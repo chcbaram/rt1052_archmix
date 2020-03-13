@@ -31,6 +31,8 @@ extern "C" {
 #include "gpio.h"
 #include "sd.h"
 
+#include "fatfs/fatfs.h"
+
 
 void hwInit(void);
 
