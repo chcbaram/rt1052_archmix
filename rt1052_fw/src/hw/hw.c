@@ -10,22 +10,28 @@
 
 #include "hw.h"
 
+
+
 extern uint32_t __vectors_start__;
-extern uint32_t _image_start;
-extern uint32_t _image_end;
-extern uint32_t _image_size;
 
 
-__attribute__((aligned(2048))) __attribute__((used, section(".tag"))) const boot_tag_t boot_tag =
-    {
-        .boot_name    = "RT1052_B/D",
-        .boot_ver     = "V2000312R1",
-        .magic_number = 0x5555AAAA,
-        .addr_fw      = (uint32_t)&__vectors_start__,
-        .image_start  = (uint32_t)&_image_start,
-        .image_end    = (uint32_t)&_image_end,
-        .image_size   = (uint32_t)&_image_size,
-    };
+__attribute__((section(".tag"))) const flash_tag_t fw_tag =
+   {
+    // fw info
+    //
+    0xAAAA5555,        // magic_number
+    "V200313R1",       // version_str
+    "RT1052_B/D",      // board_str
+    "Firmware",        // name
+    __DATE__,
+    __TIME__,
+    (uint32_t)&fw_tag,
+    (uint32_t)&__vectors_start__,
+
+
+    // tag info
+    //
+   };
 
 
 void hwInit(void)
@@ -43,7 +49,7 @@ void hwInit(void)
   uartOpen(_DEF_UART1, 57600);
 
   logPrintf("\n\n[ Firmware Begin... ]\r\n");
-  logPrintf("Tag Addr   \t\t: 0x%X\r\n", (int)&boot_tag);
+  logPrintf("Tag Addr   \t\t: 0x%X\r\n", (int)&fw_tag);
 
   clocksInit();
   //flashInit();

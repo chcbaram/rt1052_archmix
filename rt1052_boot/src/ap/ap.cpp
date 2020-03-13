@@ -50,20 +50,43 @@ void apMain(void)
 void bootCmdif(void)
 {
   bool ret = true;
+  flash_tag_t *p_tag = (flash_tag_t *)FLASH_ADDR_TAG;
+
 
 
   if (cmdifGetParamCnt() == 1 && cmdifHasString("jump", 0) == true)
   {
-    void (**jump_func)(void) = (void (**)(void))(FLASH_ADDR_FW + 4);
+    void (**jump_func)(void) = (void (**)(void))(p_tag->addr_fw + 4);
 
-    if ((uint32_t)(*jump_func) != 0xFFFFFFFF)
+    if (p_tag->magic_number == 0x5555AAAA || p_tag->magic_number == 0xAAAA5555)
     {
-      cmdifPrintf("jump 0x%X \n", (int)(*jump_func));
+      cmdifPrintf("Board     : %s \n", p_tag->board_str);
+      cmdifPrintf("Name      : %s \n", p_tag->name_str);
+      cmdifPrintf("Version   : %s \n", p_tag->version_str);
+      cmdifPrintf("Addr Tag  : 0x%X \n", p_tag->addr_tag);
+      cmdifPrintf("Addr Fw   : 0x%X \n", p_tag->addr_fw);
       delay(100);
       bspDeInit();
 
-      __set_MSP(*(uint32_t *)FLASH_ADDR_FW);
+      __set_MSP(*(uint32_t *)p_tag->addr_fw);
       (*jump_func)();
+    }
+    else
+    {
+      cmdifPrintf("firmware empty \n");
+    }
+  }
+  else if (cmdifGetParamCnt() == 1 && cmdifHasString("info", 0) == true)
+  {
+    if (p_tag->magic_number == 0x5555AAAA || p_tag->magic_number == 0xAAAA5555)
+    {
+      cmdifPrintf("Board     : %s \n", p_tag->board_str);
+      cmdifPrintf("Name      : %s \n", p_tag->name_str);
+      cmdifPrintf("Version   : %s \n", p_tag->version_str);
+      cmdifPrintf("Date      : %s \n", p_tag->date_str);
+      cmdifPrintf("Time      : %s \n", p_tag->time_str);
+      cmdifPrintf("Addr Tag  : 0x%X \n", p_tag->addr_tag);
+      cmdifPrintf("Addr Fw   : 0x%X \n", p_tag->addr_fw);
     }
     else
     {
@@ -78,5 +101,6 @@ void bootCmdif(void)
   if (ret == false)
   {
     cmdifPrintf( "boot jump \n");
+    cmdifPrintf( "boot info \n");
   }
 }

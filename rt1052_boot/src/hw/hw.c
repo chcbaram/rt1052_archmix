@@ -19,7 +19,7 @@ extern uint32_t _image_size;
 __attribute__((aligned(2048))) __attribute__((used, section(".tag"))) const boot_tag_t boot_tag =
     {
         .boot_name    = "RT1052_B/D",
-        .boot_ver     = "B2000312R1",
+        .boot_ver     = "B2000313R1",
         .magic_number = 0x5555AAAA,
         .addr_fw      = (uint32_t)&__vectors_start__,
         .image_start  = (uint32_t)&_image_start,
