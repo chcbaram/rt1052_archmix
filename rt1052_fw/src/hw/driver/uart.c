@@ -183,7 +183,7 @@ uint32_t uartGetBaud(uint8_t channel)
 
 uint32_t uartAvailable(uint8_t channel)
 {
-  uint32_t ret;
+  uint32_t ret = true;
   uart_t *p_uart = &uart_tbl[channel];
 
 

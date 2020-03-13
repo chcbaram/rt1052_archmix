@@ -32,6 +32,7 @@ void hwInit(void)
 {
   bspInit();
 
+  microsInit();
   swtimerInit();
   cmdifInit();
 

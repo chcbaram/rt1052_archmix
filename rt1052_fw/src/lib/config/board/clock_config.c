@@ -62,15 +62,15 @@ outputs:
 - {id: FLEXIO1_CLK_ROOT.outFreq, value: 30 MHz}
 - {id: FLEXIO2_CLK_ROOT.outFreq, value: 30 MHz}
 - {id: FLEXSPI_CLK_ROOT.outFreq, value: 120 MHz, locked: true, accuracy: '0.001'}
-- {id: GPT1_ipg_clk_highfreq.outFreq, value: 50/11 MHz}
-- {id: GPT2_ipg_clk_highfreq.outFreq, value: 50/11 MHz}
+- {id: GPT1_ipg_clk_highfreq.outFreq, value: 75 MHz}
+- {id: GPT2_ipg_clk_highfreq.outFreq, value: 75 MHz}
 - {id: IPG_CLK_ROOT.outFreq, value: 150 MHz}
 - {id: LCDIF_CLK_ROOT.outFreq, value: 67.5 MHz}
 - {id: LPI2C_CLK_ROOT.outFreq, value: 60 MHz}
 - {id: LPSPI_CLK_ROOT.outFreq, value: 105.6 MHz}
 - {id: LVDS1_CLK.outFreq, value: 1.2 GHz}
 - {id: MQS_MCLK.outFreq, value: 1080/17 MHz}
-- {id: PERCLK_CLK_ROOT.outFreq, value: 50/11 MHz}
+- {id: PERCLK_CLK_ROOT.outFreq, value: 75 MHz}
 - {id: PLL7_MAIN_CLK.outFreq, value: 24 MHz}
 - {id: SAI1_CLK_ROOT.outFreq, value: 1080/17 MHz}
 - {id: SAI1_MCLK1.outFreq, value: 1080/17 MHz}
@@ -93,7 +93,7 @@ settings:
 - {id: CCM.FLEXSPI_PODF.scale, value: '3', locked: true}
 - {id: CCM.FLEXSPI_SEL.sel, value: CCM_ANALOG.PLL3_PFD0_CLK}
 - {id: CCM.LPSPI_PODF.scale, value: '5'}
-- {id: CCM.PERCLK_PODF.scale, value: '33'}
+- {id: CCM.PERCLK_PODF.scale, value: '2', locked: true}
 - {id: CCM.SEMC_PODF.scale, value: '4', locked: true}
 - {id: CCM.USDHC1_CLK_SEL.sel, value: CCM_ANALOG.PLL2_PFD0_CLK}
 - {id: CCM.USDHC2_CLK_SEL.sel, value: CCM_ANALOG.PLL2_PFD0_CLK}
@@ -197,7 +197,7 @@ void BOARD_BootClockRUN(void)
     CLOCK_DisableClock(kCLOCK_Gpt2S);
     CLOCK_DisableClock(kCLOCK_Pit);
     /* Set PERCLK_PODF. */
-    CLOCK_SetDiv(kCLOCK_PerclkDiv, 32);
+    CLOCK_SetDiv(kCLOCK_PerclkDiv, 1);
     /* Disable USDHC1 clock gate. */
     CLOCK_DisableClock(kCLOCK_Usdhc1);
     /* Set USDHC1_PODF. */

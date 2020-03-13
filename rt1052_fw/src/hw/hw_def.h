@@ -13,6 +13,7 @@
 #include "bsp.h"
 
 
+#define _USE_HW_MICROS
 #define _USE_HW_CLOCKS
 #define _USE_HW_FLASH
 
