@@ -77,6 +77,7 @@ uint32_t cmdifRxAvailable(void);
 
 bool cmdifHasString(const char *p_str, uint8_t index);
 unsigned long cmdifGetParam(uint8_t index);
+char * cmdifGetParamStr(uint8_t index);
 uint32_t cmdifGetParamCnt(void);
 
 #endif

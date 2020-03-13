@@ -429,6 +429,17 @@ unsigned long cmdifGetParam(uint8_t index)
   return  strtoul((const char * ) cmdif_cmd.param.argv[index+1], (char **)NULL, (int) 0);
 }
 
+char * cmdifGetParamStr(uint8_t index)
+{
+  if ((cmdif_cmd.param.argc - 1) <= index)
+  {
+    return 0;
+  }
+
+
+  return  (char * ) cmdif_cmd.param.argv[index+1];
+}
+
 uint32_t cmdifGetParamCnt(void)
 {
   return cmdif_cmd.param.argc - 1;

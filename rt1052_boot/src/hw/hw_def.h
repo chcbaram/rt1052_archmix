@@ -67,4 +67,12 @@
 #define FLASH_ADDR_END                (FLASH_ADDR_START + 2*1024*1024)
 
 
+#define SDRAM_ADDR_TAG                0x80200000
+#define SDRAM_ADDR_FW                 0x80200400
+
+#define SDRAM_ADDR_START              SDRAM_ADDR_TAG
+#define SDRAM_ADDR_END                (SDRAM_ADDR_START + 2*1024*1024)
+
+
+
 #endif /* SRC_HW_HW_DEF_H_ */

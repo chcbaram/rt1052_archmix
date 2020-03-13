@@ -17,6 +17,9 @@
 #include <stdarg.h>
 
 
+#include "def_err.h"
+
+
 
 #define _DEF_LED1                   0
 #define _DEF_LED2                   1
