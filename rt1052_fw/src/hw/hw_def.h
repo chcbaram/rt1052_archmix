@@ -38,5 +38,10 @@
 #define      HW_CMDIF_CMD_BUF_LENGTH        128
 
 
+#define _USE_HW_SDRAM
+#define      HW_SDRAM_MEM_ADDR      0x80000000
+#define      HW_SDRAM_MEM_SIZE      (32*1024*1024)
+
+
 
 #endif /* SRC_HW_HW_DEF_H_ */

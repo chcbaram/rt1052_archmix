@@ -43,4 +43,5 @@ void hwInit(void)
 
   clocksInit();
   flashInit();
+  sdramInit();
 }

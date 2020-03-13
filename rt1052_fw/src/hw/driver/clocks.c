@@ -52,7 +52,6 @@ void clocksCmdif(void);
 
 bool clocksInit(void)
 {
-#if 0
   // For SDRAM 150Mhz
   //
   /* Set SEMC_PODF. */
@@ -63,8 +62,7 @@ bool clocksInit(void)
   CLOCK_SetMux(kCLOCK_SemcMux, 0);
 
 
-  // For PLL3
-  //
+
   /* Init Usb1 pfd0. */
   CLOCK_InitUsb1Pfd(kCLOCK_Pfd0, 24);
   /* Init Usb1 pfd1. */
@@ -73,20 +71,6 @@ bool clocksInit(void)
   CLOCK_InitUsb1Pfd(kCLOCK_Pfd2, 17);
   /* Init Usb1 pfd3. */
   CLOCK_InitUsb1Pfd(kCLOCK_Pfd3, 19);
-
-
-  // For PLL2
-  //
-  /* Init System pfd0. */
-  CLOCK_InitSysPfd(kCLOCK_Pfd0, 24);
-  /* Init System pfd1. */
-  CLOCK_InitSysPfd(kCLOCK_Pfd1, 16);
-  /* Init System pfd2. */
-  CLOCK_InitSysPfd(kCLOCK_Pfd2, 24);
-  /* Init System pfd3. */
-  CLOCK_InitSysPfd(kCLOCK_Pfd3, 16);
-
-#endif
 
 
 

@@ -27,6 +27,7 @@ extern "C" {
 #include "flash.h"
 #include "qspi.h"
 #include "clocks.h"
+#include "sdram.h"
 
 
 void hwInit(void);

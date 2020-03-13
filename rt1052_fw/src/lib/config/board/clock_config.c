@@ -82,7 +82,7 @@ outputs:
 - {id: SAI3_CLK_ROOT.outFreq, value: 1080/17 MHz}
 - {id: SAI3_MCLK1.outFreq, value: 1080/17 MHz}
 - {id: SAI3_MCLK3.outFreq, value: 30 MHz}
-- {id: SEMC_CLK_ROOT.outFreq, value: 120 MHz}
+- {id: SEMC_CLK_ROOT.outFreq, value: 150 MHz}
 - {id: SPDIF0_CLK_ROOT.outFreq, value: 30 MHz}
 - {id: TRACE_CLK_ROOT.outFreq, value: 6 MHz}
 - {id: UART_CLK_ROOT.outFreq, value: 80 MHz, locked: true, accuracy: '0.001'}
@@ -93,7 +93,7 @@ settings:
 - {id: CCM.FLEXSPI_PODF.scale, value: '3', locked: true}
 - {id: CCM.FLEXSPI_SEL.sel, value: CCM_ANALOG.PLL3_PFD0_CLK}
 - {id: CCM.PERCLK_PODF.scale, value: '33'}
-- {id: CCM.SEMC_PODF.scale, value: '5'}
+- {id: CCM.SEMC_PODF.scale, value: '4', locked: true}
 - {id: CCM_ANALOG.PLL1_BYPASS.sel, value: CCM_ANALOG.PLL1}
 - {id: CCM_ANALOG.PLL1_PREDIV.scale, value: '1', locked: true}
 - {id: CCM_ANALOG.PLL1_VDIV.scale, value: '50', locked: true}
@@ -207,7 +207,7 @@ void BOARD_BootClockRUN(void)
     /* Disable Semc clock gate. */
     CLOCK_DisableClock(kCLOCK_Semc);
     /* Set SEMC_PODF. */
-    CLOCK_SetDiv(kCLOCK_SemcDiv, 4);
+    CLOCK_SetDiv(kCLOCK_SemcDiv, 3);
     /* Set Semc alt clock source. */
     CLOCK_SetMux(kCLOCK_SemcAltMux, 0);
     /* Set Semc clock source. */
