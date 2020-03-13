@@ -45,4 +45,5 @@ void hwInit(void)
   flashInit();
   sdramInit();
   gpioInit();
+  sdInit();
 }

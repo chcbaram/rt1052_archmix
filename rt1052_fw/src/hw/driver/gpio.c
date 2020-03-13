@@ -33,7 +33,7 @@ typedef struct
 
 gpio_tbl_t gpio_tbl[GPIO_MAX_CH] =
 {
-  {GPIO2, 28, _DEF_INPUT,  _DEF_HIGH, _DEF_HIGH},  // 0. SDCARD_CD
+  {GPIO2, 28, _DEF_INPUT,   _DEF_HIGH, _DEF_HIGH},  // 0. SDCARD_CD
 };
 
 

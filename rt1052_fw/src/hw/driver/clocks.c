@@ -45,6 +45,7 @@ typedef struct
 
 
 
+
 #ifdef _USE_HW_CMDIF
 void clocksCmdifInit(void);
 void clocksCmdif(void);
@@ -63,6 +64,23 @@ bool clocksInit(void)
 
 
 
+  // For PLL2
+  //
+  CLOCK_InitSysPll(&sysPllConfig_BOARD_BootClockRUN);
+  /* Init System pfd0. */
+  CLOCK_InitSysPfd(kCLOCK_Pfd0, 24);
+  /* Init System pfd1. */
+  CLOCK_InitSysPfd(kCLOCK_Pfd1, 16);
+  /* Init System pfd2. */
+  CLOCK_InitSysPfd(kCLOCK_Pfd2, 24);
+  /* Init System pfd3. */
+  CLOCK_InitSysPfd(kCLOCK_Pfd3, 16);
+
+
+  // For PLL3
+  //
+  /* Init Usb1 PLL. */
+  CLOCK_InitUsb1Pll(&usb1PllConfig_BOARD_BootClockRUN);
   /* Init Usb1 pfd0. */
   CLOCK_InitUsb1Pfd(kCLOCK_Pfd0, 24);
   /* Init Usb1 pfd1. */
@@ -71,7 +89,6 @@ bool clocksInit(void)
   CLOCK_InitUsb1Pfd(kCLOCK_Pfd2, 17);
   /* Init Usb1 pfd3. */
   CLOCK_InitUsb1Pfd(kCLOCK_Pfd3, 19);
-
 
 
 #ifdef _USE_HW_CMDIF

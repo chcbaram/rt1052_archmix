@@ -29,6 +29,7 @@ extern "C" {
 #include "clocks.h"
 #include "sdram.h"
 #include "gpio.h"
+#include "sd.h"
 
 
 void hwInit(void);
