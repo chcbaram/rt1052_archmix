@@ -80,7 +80,10 @@ typedef struct
   uint8_t  time_str   [32];
   uint32_t addr_tag;
   uint32_t addr_fw;
-  uint32_t reserved   [32];
+
+  uint32_t load_start;
+  uint32_t load_size;
+  uint32_t reserved   [30];
 
   //-- tag info
   //

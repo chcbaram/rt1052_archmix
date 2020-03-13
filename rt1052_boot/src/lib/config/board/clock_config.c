@@ -82,7 +82,7 @@ outputs:
 - {id: SAI3_CLK_ROOT.outFreq, value: 1080/17 MHz}
 - {id: SAI3_MCLK1.outFreq, value: 1080/17 MHz}
 - {id: SAI3_MCLK3.outFreq, value: 30 MHz}
-- {id: SEMC_CLK_ROOT.outFreq, value: 150 MHz, locked: true, accuracy: '0.001'}
+- {id: SEMC_CLK_ROOT.outFreq, value: 150 MHz}
 - {id: SPDIF0_CLK_ROOT.outFreq, value: 30 MHz}
 - {id: TRACE_CLK_ROOT.outFreq, value: 99 MHz}
 - {id: UART_CLK_ROOT.outFreq, value: 80 MHz, locked: true, accuracy: '0.001'}

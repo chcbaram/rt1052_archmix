@@ -108,7 +108,6 @@ BOARD_InitPins:
     drive_strength: R0, slew_rate: Fast}
   - {pin_num: J2, peripheral: USDHC1, signal: 'usdhc_data, 3', pin_signal: GPIO_SD_B0_05, hysteresis_enable: Enable, pull_up_down_config: Pull_Up_47K_Ohm, pull_keeper_select: Pull,
     drive_strength: R0, slew_rate: Fast}
-  - {pin_num: M12, peripheral: GPIO1, signal: 'gpio_io, 19', pin_signal: GPIO_AD_B1_03, direction: OUTPUT, hysteresis_enable: Enable, pull_up_down_config: Pull_Up_100K_Ohm}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -149,15 +148,6 @@ void BOARD_InitPins(void) {
   /* Initialize GPIO functionality on GPIO_AD_B0_11 (pin G10) */
   GPIO_PinInit(GPIO1, 11U, &gpio1_pinG10_config);
 
-  /* GPIO configuration on GPIO_AD_B1_03 (pin M12) */
-  gpio_pin_config_t gpio1_pinM12_config = {
-      .direction = kGPIO_DigitalOutput,
-      .outputLogic = 0U,
-      .interruptMode = kGPIO_NoIntmode
-  };
-  /* Initialize GPIO functionality on GPIO_AD_B1_03 (pin M12) */
-  GPIO_PinInit(GPIO1, 19U, &gpio1_pinM12_config);
-
   /* GPIO configuration on GPIO_B1_12 (pin D13) */
   gpio_pin_config_t gpio2_pinD13_config = {
       .direction = kGPIO_DigitalInput,
@@ -190,9 +180,6 @@ void BOARD_InitPins(void) {
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_AD_B0_13_LPUART1_RX,        /* GPIO_AD_B0_13 is configured as LPUART1_RX */
-      0U);                                    /* Software Input On Field: Input Path is determined by functionality */
-  IOMUXC_SetPinMux(
-      IOMUXC_GPIO_AD_B1_03_GPIO1_IO19,        /* GPIO_AD_B1_03 is configured as GPIO1_IO19 */
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_B1_12_GPIO2_IO28,           /* GPIO_B1_12 is configured as GPIO2_IO28 */
@@ -391,16 +378,6 @@ void BOARD_InitPins(void) {
                                                  Pull / Keep Enable Field: Pull/Keeper Enabled
                                                  Pull / Keep Select Field: Pull
                                                  Pull Up / Down Config. Field: 47K Ohm Pull Up
-                                                 Hyst. Enable Field: Hysteresis Enabled */
-  IOMUXC_SetPinConfig(
-      IOMUXC_GPIO_AD_B1_03_GPIO1_IO19,        /* GPIO_AD_B1_03 PAD functional properties : */
-      0x0190B0U);                             /* Slew Rate Field: Slow Slew Rate
-                                                 Drive Strength Field: R0/6
-                                                 Speed Field: medium(100MHz)
-                                                 Open Drain Enable Field: Open Drain Disabled
-                                                 Pull / Keep Enable Field: Pull/Keeper Enabled
-                                                 Pull / Keep Select Field: Keeper
-                                                 Pull Up / Down Config. Field: 100K Ohm Pull Up
                                                  Hyst. Enable Field: Hysteresis Enabled */
   IOMUXC_SetPinConfig(
       IOMUXC_GPIO_B1_12_GPIO2_IO28,           /* GPIO_B1_12 PAD functional properties : */

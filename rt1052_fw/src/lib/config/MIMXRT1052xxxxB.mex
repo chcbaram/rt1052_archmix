@@ -289,6 +289,7 @@
                   <pin peripheral="SEMC" signal="semc_cke" pin_num="A2" pin_signal="GPIO_EMC_27">
                      <pin_features>
                         <pin_feature name="hysteresis_enable" value="Enable"/>
+                        <pin_feature name="pull_keeper_select" value="Keeper"/>
                         <pin_feature name="speed" value="MHZ_200"/>
                         <pin_feature name="drive_strength" value="R0_7"/>
                         <pin_feature name="slew_rate" value="Fast"/>
@@ -464,6 +465,7 @@
                   </pin>
                   <pin peripheral="SEMC" signal="semc_dqs" pin_num="B7" pin_signal="GPIO_EMC_39">
                      <pin_features>
+                        <pin_feature name="software_input_on" value="Enable"/>
                         <pin_feature name="hysteresis_enable" value="Enable"/>
                         <pin_feature name="speed" value="MHZ_200"/>
                         <pin_feature name="drive_strength" value="R0_7"/>
@@ -783,7 +785,7 @@
             <component name="system" uuid="64624f94-8312-4375-9c52-792387214b95" type_id="system_54b53072540eeeb8f8e9343e71f28176">
                <config_set_global name="global_system_definitions"/>
             </component>
-            <component name="msg" uuid="c4e5513e-ab0d-4317-b534-4ab8016c8cd4" type_id="msg_6e2baaf3b97dbeef01c0043275f9a0e7">
+            <component name="msg" uuid="a3db92de-79bc-4cc4-971e-27d33422736a" type_id="msg_6e2baaf3b97dbeef01c0043275f9a0e7">
                <config_set_global name="global_messages"/>
             </component>
          </components>

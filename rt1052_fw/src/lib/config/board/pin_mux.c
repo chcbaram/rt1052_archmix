@@ -69,7 +69,8 @@ BOARD_InitPins:
   - {pin_num: C1, peripheral: SEMC, signal: 'BA, 0', pin_signal: GPIO_EMC_21, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: F1, peripheral: SEMC, signal: 'BA, 1', pin_signal: GPIO_EMC_22, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: D3, peripheral: SEMC, signal: semc_cas, pin_signal: GPIO_EMC_24, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
-  - {pin_num: A2, peripheral: SEMC, signal: semc_cke, pin_signal: GPIO_EMC_27, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
+  - {pin_num: A2, peripheral: SEMC, signal: semc_cke, pin_signal: GPIO_EMC_27, hysteresis_enable: Enable, pull_keeper_select: Keeper, speed: MHZ_200, drive_strength: R0_7,
+    slew_rate: Fast}
   - {pin_num: B3, peripheral: SEMC, signal: semc_clk, pin_signal: GPIO_EMC_26, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: E1, peripheral: SEMC, signal: 'CS, 0', pin_signal: GPIO_EMC_29, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: C7, peripheral: SEMC, signal: 'CSX, 0', pin_signal: GPIO_EMC_41, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
@@ -91,7 +92,8 @@ BOARD_InitPins:
   - {pin_num: E4, peripheral: SEMC, signal: 'DATA, 15', pin_signal: GPIO_EMC_37, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: H3, peripheral: SEMC, signal: 'DM, 0', pin_signal: GPIO_EMC_08, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: D6, peripheral: SEMC, signal: 'DM, 1', pin_signal: GPIO_EMC_38, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
-  - {pin_num: B7, peripheral: SEMC, signal: semc_dqs, pin_signal: GPIO_EMC_39, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
+  - {pin_num: B7, peripheral: SEMC, signal: semc_dqs, pin_signal: GPIO_EMC_39, software_input_on: Enable, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7,
+    slew_rate: Fast}
   - {pin_num: D2, peripheral: SEMC, signal: semc_ras, pin_signal: GPIO_EMC_25, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: A7, peripheral: SEMC, signal: semc_rdy, pin_signal: GPIO_EMC_40, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: D1, peripheral: SEMC, signal: semc_we, pin_signal: GPIO_EMC_28, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
@@ -303,7 +305,7 @@ void BOARD_InitPins(void) {
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_EMC_39_SEMC_DQS,            /* GPIO_EMC_39 is configured as SEMC_DQS */
-      0U);                                    /* Software Input On Field: Input Path is determined by functionality */
+      1U);                                    /* Software Input On Field: Force input path of pad GPIO_EMC_39 */
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_EMC_40_SEMC_RDY,            /* GPIO_EMC_40 is configured as SEMC_RDY */
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
@@ -661,12 +663,12 @@ void BOARD_InitPins(void) {
                                                  Hyst. Enable Field: Hysteresis Enabled */
   IOMUXC_SetPinConfig(
       IOMUXC_GPIO_EMC_27_SEMC_CKE,            /* GPIO_EMC_27 PAD functional properties : */
-      0x0130F9U);                             /* Slew Rate Field: Fast Slew Rate
+      0x0110F9U);                             /* Slew Rate Field: Fast Slew Rate
                                                  Drive Strength Field: R0/7
                                                  Speed Field: max(200MHz)
                                                  Open Drain Enable Field: Open Drain Disabled
                                                  Pull / Keep Enable Field: Pull/Keeper Enabled
-                                                 Pull / Keep Select Field: Pull
+                                                 Pull / Keep Select Field: Keeper
                                                  Pull Up / Down Config. Field: 100K Ohm Pull Down
                                                  Hyst. Enable Field: Hysteresis Enabled */
   IOMUXC_SetPinConfig(

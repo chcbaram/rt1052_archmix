@@ -65,6 +65,20 @@ void bootCmdif(void)
       cmdifPrintf("Version   : %s \n", p_tag->version_str);
       cmdifPrintf("Addr Tag  : 0x%X \n", p_tag->addr_tag);
       cmdifPrintf("Addr Fw   : 0x%X \n", p_tag->addr_fw);
+      cmdifPrintf("Load Start: 0x%X \n", p_tag->load_start);
+      cmdifPrintf("Load Size : 0x%X \n", p_tag->load_size);
+
+      if (p_tag->addr_fw != p_tag->load_start)
+      {
+        uint32_t pre_time;
+        pre_time = micros();
+        memcpy((void *)p_tag->addr_fw, (const void *)p_tag->load_start, p_tag->load_size);
+        SCB_InvalidateDCache_by_Addr((void *)(p_tag->addr_fw), p_tag->load_size);
+        cmdifPrintf("Load Fw   : %d ms \n", (micros()-pre_time)/1000);
+      }
+
+      cmdifPrintf("Jump Addr : 0x%X \n", (int)(*jump_func));
+
       delay(100);
       bspDeInit();
 
@@ -87,6 +101,8 @@ void bootCmdif(void)
       cmdifPrintf("Time      : %s \n", p_tag->time_str);
       cmdifPrintf("Addr Tag  : 0x%X \n", p_tag->addr_tag);
       cmdifPrintf("Addr Fw   : 0x%X \n", p_tag->addr_fw);
+      cmdifPrintf("Load Start: 0x%X \n", p_tag->load_start);
+      cmdifPrintf("Load Size : %d KB \n", p_tag->load_size/1024);
     }
     else
     {
@@ -104,3 +120,5 @@ void bootCmdif(void)
     cmdifPrintf( "boot info \n");
   }
 }
+
+
