@@ -25,7 +25,7 @@ void apInit(void)
 void apMain(void)
 {
   uint32_t pre_time;
-  uint32_t pre_time_us;
+
 
   pre_time = millis();
   while(1)
@@ -34,9 +34,6 @@ void apMain(void)
     {
       pre_time = millis();
       ledToggle(_DEF_LED1);
-
-      logPrintf("%d us\n", (micros()-pre_time_us));
-      pre_time_us = micros();
     }
 
     cmdifMain();
@@ -47,4 +44,5 @@ void apMain(void)
     }
   }
 }
+
 

@@ -25,7 +25,7 @@ void SysTick_Handler(void)
 }
 
 
-extern void qspiInit(void);
+
 
 void bspInit(void)
 {
@@ -46,6 +46,18 @@ void bspInit(void)
 
 void bspDeInit(void)
 {
+  // Disable Interrupts
+  //
+  for (int i=0; i<8; i++)
+  {
+    NVIC->ICER[i] = 0xFFFFFFFF;
+    __DSB();
+    __ISB();
+  }
+  SysTick->CTRL = 0;
+
+  SCB_DisableDCache();
+  SCB_DisableICache();
 }
 
 int __io_putchar(int ch)

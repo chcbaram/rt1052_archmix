@@ -1,0 +1,7 @@
+ExitOnError 1
+r
+h
+loadfile "D:\git\rt1052_archmix\rt1052_boot\Debug\rt1052_boot.hex"
+qc
+
+qc

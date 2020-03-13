@@ -19,7 +19,7 @@ extern uint32_t _image_size;
 __attribute__((aligned(2048))) __attribute__((used, section(".tag"))) const boot_tag_t boot_tag =
     {
         .boot_name    = "RT1052_B/D",
-        .boot_ver     = "B2000312R1",
+        .boot_ver     = "V2000312R1",
         .magic_number = 0x5555AAAA,
         .addr_fw      = (uint32_t)&__vectors_start__,
         .image_start  = (uint32_t)&_image_start,
@@ -42,9 +42,12 @@ void hwInit(void)
   uartInit();
   uartOpen(_DEF_UART1, 57600);
 
+  logPrintf("\n\n[ Firmware Begin... ]\r\n");
+  logPrintf("Tag Addr   \t\t: 0x%X\r\n", (int)&boot_tag);
+
   clocksInit();
-  flashInit();
-  sdramInit();
+  //flashInit();
+  //sdramInit();
   gpioInit();
 
   if (sdInit() == true)
