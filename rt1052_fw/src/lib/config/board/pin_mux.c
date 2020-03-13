@@ -16,6 +16,7 @@ pin_labels:
 - {pin_num: G13, pin_signal: GPIO_AD_B0_10, label: USER_LED_G}
 - {pin_num: G10, pin_signal: GPIO_AD_B0_11, label: USER_LED_B}
 - {pin_num: L6, pin_signal: WAKEUP, label: USER_BUTTON}
+- {pin_num: D13, pin_signal: GPIO_B1_12, label: SD_CD_SW}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -94,6 +95,7 @@ BOARD_InitPins:
   - {pin_num: D2, peripheral: SEMC, signal: semc_ras, pin_signal: GPIO_EMC_25, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: A7, peripheral: SEMC, signal: semc_rdy, pin_signal: GPIO_EMC_40, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
   - {pin_num: D1, peripheral: SEMC, signal: semc_we, pin_signal: GPIO_EMC_28, hysteresis_enable: Enable, speed: MHZ_200, drive_strength: R0_7, slew_rate: Fast}
+  - {pin_num: D13, peripheral: GPIO2, signal: 'gpio_io, 28', pin_signal: GPIO_B1_12, direction: INPUT, pull_up_down_config: Pull_Up_100K_Ohm}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -134,6 +136,15 @@ void BOARD_InitPins(void) {
   /* Initialize GPIO functionality on GPIO_AD_B0_11 (pin G10) */
   GPIO_PinInit(GPIO1, 11U, &gpio1_pinG10_config);
 
+  /* GPIO configuration on GPIO_B1_12 (pin D13) */
+  gpio_pin_config_t gpio2_pinD13_config = {
+      .direction = kGPIO_DigitalInput,
+      .outputLogic = 0U,
+      .interruptMode = kGPIO_NoIntmode
+  };
+  /* Initialize GPIO functionality on GPIO_B1_12 (pin D13) */
+  GPIO_PinInit(GPIO2, 28U, &gpio2_pinD13_config);
+
   /* GPIO configuration on WAKEUP (pin L6) */
   gpio_pin_config_t gpio5_pinL6_config = {
       .direction = kGPIO_DigitalInput,
@@ -157,6 +168,9 @@ void BOARD_InitPins(void) {
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_AD_B0_13_LPUART1_RX,        /* GPIO_AD_B0_13 is configured as LPUART1_RX */
+      0U);                                    /* Software Input On Field: Input Path is determined by functionality */
+  IOMUXC_SetPinMux(
+      IOMUXC_GPIO_B1_12_GPIO2_IO28,           /* GPIO_B1_12 is configured as GPIO2_IO28 */
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_EMC_00_SEMC_DATA00,         /* GPIO_EMC_00 is configured as SEMC_DATA00 */
@@ -335,6 +349,16 @@ void BOARD_InitPins(void) {
                                                  Pull / Keep Select Field: Pull
                                                  Pull Up / Down Config. Field: 47K Ohm Pull Up
                                                  Hyst. Enable Field: Hysteresis Enabled */
+  IOMUXC_SetPinConfig(
+      IOMUXC_GPIO_B1_12_GPIO2_IO28,           /* GPIO_B1_12 PAD functional properties : */
+      0x90B0U);                               /* Slew Rate Field: Slow Slew Rate
+                                                 Drive Strength Field: R0/6
+                                                 Speed Field: medium(100MHz)
+                                                 Open Drain Enable Field: Open Drain Disabled
+                                                 Pull / Keep Enable Field: Pull/Keeper Enabled
+                                                 Pull / Keep Select Field: Keeper
+                                                 Pull Up / Down Config. Field: 100K Ohm Pull Up
+                                                 Hyst. Enable Field: Hysteresis Disabled */
   IOMUXC_SetPinConfig(
       IOMUXC_GPIO_EMC_00_SEMC_DATA00,         /* GPIO_EMC_00 PAD functional properties : */
       0x0110F9U);                             /* Slew Rate Field: Fast Slew Rate

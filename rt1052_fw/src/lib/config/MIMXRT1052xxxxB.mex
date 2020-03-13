@@ -28,6 +28,7 @@
                <pin_label pin_num="G13" pin_signal="GPIO_AD_B0_10" label="USER_LED_G"/>
                <pin_label pin_num="G10" pin_signal="GPIO_AD_B0_11" label="USER_LED_B"/>
                <pin_label pin_num="L6" pin_signal="WAKEUP" label="USER_BUTTON"/>
+               <pin_label pin_num="D13" pin_signal="GPIO_B1_12" label="SD_CD_SW"/>
             </pin_labels>
          </pins_profile>
          <functions_list>
@@ -55,6 +56,11 @@
                      </feature>
                   </dependency>
                   <dependency resourceType="Peripheral" resourceId="SEMC" description="Peripheral SEMC is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="Peripheral" resourceId="GPIO2" description="Peripheral GPIO2 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
                      <feature name="initialized" evaluation="equal">
                         <data>true</data>
                      </feature>
@@ -481,6 +487,12 @@
                         <pin_feature name="speed" value="MHZ_200"/>
                         <pin_feature name="drive_strength" value="R0_7"/>
                         <pin_feature name="slew_rate" value="Fast"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="GPIO2" signal="gpio_io, 28" pin_num="D13" pin_signal="GPIO_B1_12">
+                     <pin_features>
+                        <pin_feature name="direction" value="INPUT"/>
+                        <pin_feature name="pull_up_down_config" value="Pull_Up_100K_Ohm"/>
                      </pin_features>
                   </pin>
                </pins>

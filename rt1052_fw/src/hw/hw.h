@@ -28,6 +28,7 @@ extern "C" {
 #include "qspi.h"
 #include "clocks.h"
 #include "sdram.h"
+#include "gpio.h"
 
 
 void hwInit(void);
