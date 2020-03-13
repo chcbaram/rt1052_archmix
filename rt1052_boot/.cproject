@@ -38,12 +38,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/sdmmc/inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class/cdc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source/ehci}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/phy}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/lists}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/osa}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/usb_cdc}&quot;"/>
@@ -58,6 +52,17 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/bsp}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/common}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/usb/usb_cdc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/usb}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class/msc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/usb/usb_msc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class/cdc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source/ehci}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/phy}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1204507589" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -ffunction-sections -fdata-sections -ffreestanding -fno-builtin -fno-rtti -fno-exceptions" valueType="string"/>
 								<option id="com.crt.advproject.cpp.arch.1547907863" name="Architecture" superClass="com.crt.advproject.cpp.arch" useByScannerDiscovery="true"/>
@@ -82,11 +87,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/phy}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/sdmmc/inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class/cdc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source/ehci}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/lists}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/osa}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/usb_cdc}&quot;"/>
@@ -101,6 +101,17 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/bsp}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/common}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/usb/usb_cdc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/usb}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class/msc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/hw/driver/usb/usb_msc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class/cdc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/class}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/source/ehci}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/device/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/lib/sdk/usb/phy}&quot;"/>
 								</option>
 								<option id="com.crt.advproject.gcc.fpu.2114759110" name="Floating point" superClass="com.crt.advproject.gcc.fpu" useByScannerDiscovery="true" value="com.crt.advproject.gcc.fpu.fpv5dp.hard" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.misc.other.1567618383" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -ffunction-sections -fdata-sections -ffreestanding -fno-builtin" valueType="string"/>

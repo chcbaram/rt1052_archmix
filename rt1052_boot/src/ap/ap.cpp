@@ -23,6 +23,8 @@ void apInit(void)
   uartOpen(_DEF_UART2, 57600);
 
   cmdifAdd("boot", bootCmdif);
+
+  usbdInit();
 }
 
 void apMain(void)

@@ -32,6 +32,7 @@ extern "C" {
 #include "sd.h"
 #include "micros.h"
 #include "reset.h"
+#include "usbd.h"
 
 
 #include "fatfs/fatfs.h"

@@ -74,4 +74,6 @@ void hwInit(void)
   {
     fatfsInit();
   }
+
+  usbdInit();
 }
